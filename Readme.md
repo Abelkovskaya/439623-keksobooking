@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анисия Белковская](https://up.htmlacademy.ru/javascript/14/user/439623).
-* Наставник: `Неизвестно`.
+* Наставник: [Павел Скрипкин](https://https://htmlacademy.ru/profile/id604273).
 
 ---
 

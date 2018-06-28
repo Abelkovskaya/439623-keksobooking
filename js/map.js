@@ -28,6 +28,8 @@ var PHOTOS_ARR = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
+var NOT_FOR_GUESTS = '100';
+
 // нахожу указанные в задании элементы
 var map = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
@@ -131,11 +133,13 @@ var createObjects = function (quantity) {
     obj.offer = {};
     obj.location = {};
 
-    if (numbersAvatar[i] <= 9) {
+    /*if (numbersAvatar[i] <= 9) {
       obj.author.avatar = 'img/avatars/user0' + numbersAvatar[i] + '.png';
     } else {
       obj.author.avatar = 'img/avatars/user' + numbersAvatar[i] + '.png';
-    }
+    }*/
+    var avatarnumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
+    obj.author.avatar = 'img/avatars/user' + avatarnumber + '.png';
 
     obj.offer.title = TITLE_NAMES[i];
     obj.location.x = generateRandIndex(300, 900);
@@ -282,6 +286,7 @@ var onMapClick = function (evt) {
 };
 map.addEventListener('click', onMapClick);
 
+
 // ВАЛИДАЦИЯ ФОРМ
 var inputRooms = adForm.querySelector('select#room_number');
 var inputGuests = adForm.querySelector('select#capacity');
@@ -291,10 +296,10 @@ var inputTimeOut = adForm.querySelector('select#timeout');
 
 // проверка полей комнат и гостей при изменении поля с гостями
 var onInputGuestsChange = function () {
-  if (inputRooms.value === '100' && inputGuests.value !== '0') {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
-  } else if (inputRooms.value !== '100' && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+  if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
+    displayError();
+  } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
+    displayError();
   } else {
     inputGuests.setCustomValidity('');
   }
@@ -303,15 +308,19 @@ inputGuests.addEventListener('change', onInputGuestsChange);
 
 // проверка полей комнат и гостей при изменении поля с комнатами
 var onInputRoomsChange = function () {
-  if (inputRooms.value === '100' && inputGuests.value !== '0') {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
-  } else if (inputRooms.value !== '100' && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+  if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
+    displayError();
+  } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
+    displayError();
   } else {
     inputGuests.setCustomValidity('');
   }
 };
 inputRooms.addEventListener('change', onInputRoomsChange);
+
+var displayError = function () {
+  inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+};
 
 // установка минимальных цен в зависимости от типа дома
 var onInputTypeChange = function () {

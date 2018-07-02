@@ -262,16 +262,6 @@ var renderFinalCard = function (evt) {
   var currentSrc = currentImg.src.substr(srcFrom, srcTo);
   var articleCard = map.querySelector('article');
 
-  // for (var i = 0; i < points.length; i++) {
-  //   if (currentSrc === points[i].author.avatar) {
-  //     if (!articleCard) {
-  //       map.insertBefore(renderCard(points[i]), mapFiltersContainer);
-  //     } else {
-  //       articleCard.remove();
-  //       map.insertBefore(renderCard(points[i]), mapFiltersContainer);
-  //     }
-  //   }
-  // }
   if (articleCard) {
     articleCard.remove();
   }

@@ -142,13 +142,9 @@ var createObjects = function (quantity) {
     obj.offer = {};
     obj.location = {};
 
-    /*if (numbersAvatar[i] <= 9) {
-      obj.author.avatar = 'img/avatars/user0' + numbersAvatar[i] + '.png';
-    } else {
-      obj.author.avatar = 'img/avatars/user' + numbersAvatar[i] + '.png';
-    }*/
-    var avatarnumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
-    obj.author.avatar = 'img/avatars/user' + avatarnumber + '.png';
+
+    var avatarNumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
+    obj.author.avatar = 'img/avatars/user' + avatarNumber + '.png';
 
     obj.offer.title = TITLE_NAMES[i];
     obj.location.x = generateRandIndex(MIN_X, MAX_X);

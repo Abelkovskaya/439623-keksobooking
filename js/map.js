@@ -30,6 +30,15 @@ var PHOTOS_ARR = [
 
 var NOT_FOR_GUESTS = '100';
 
+// указатель
+var MIN_X = 300;
+var MIN_Y = 130;
+var MAX_X = 900;
+var MAX_Y = 630;
+
+var MIN_PRICE = 1000;
+var MAX_PRICE = 1000000;
+
 // нахожу указанные в задании элементы
 var map = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
@@ -133,19 +142,15 @@ var createObjects = function (quantity) {
     obj.offer = {};
     obj.location = {};
 
-    /*if (numbersAvatar[i] <= 9) {
-      obj.author.avatar = 'img/avatars/user0' + numbersAvatar[i] + '.png';
-    } else {
-      obj.author.avatar = 'img/avatars/user' + numbersAvatar[i] + '.png';
-    }*/
-    var avatarnumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
-    obj.author.avatar = 'img/avatars/user' + avatarnumber + '.png';
+
+    var avatarNumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
+    obj.author.avatar = 'img/avatars/user' + avatarNumber + '.png';
 
     obj.offer.title = TITLE_NAMES[i];
-    obj.location.x = generateRandIndex(300, 900);
-    obj.location.y = generateRandIndex(130, 630);
+    obj.location.x = generateRandIndex(MIN_X, MAX_X);
+    obj.location.y = generateRandIndex(MIN_Y, MAX_Y);
     obj.offer.address = obj.location.x + ', ' + obj.location.y;
-    obj.offer.price = generateRandIndex(1000, 1000000);
+    obj.offer.price = generateRandIndex(MIN_PRICE, MAX_PRICE);
     obj.offer.type = OBJECT_TYPE[generateRandIndex(0, OBJECT_TYPE.length - 1)];
     obj.offer.rooms = generateRandIndex(1, 5);
     obj.offer.guests = generateRandIndex(1, 8);
@@ -257,14 +262,23 @@ var renderFinalCard = function (evt) {
   var currentSrc = currentImg.src.substr(srcFrom, srcTo);
   var articleCard = map.querySelector('article');
 
+  // for (var i = 0; i < points.length; i++) {
+  //   if (currentSrc === points[i].author.avatar) {
+  //     if (!articleCard) {
+  //       map.insertBefore(renderCard(points[i]), mapFiltersContainer);
+  //     } else {
+  //       articleCard.remove();
+  //       map.insertBefore(renderCard(points[i]), mapFiltersContainer);
+  //     }
+  //   }
+  // }
+  if (articleCard) {
+    articleCard.remove();
+  }
+
   for (var i = 0; i < points.length; i++) {
     if (currentSrc === points[i].author.avatar) {
-      if (!articleCard) {
-        map.insertBefore(renderCard(points[i]), mapFiltersContainer);
-      } else {
-        articleCard.remove();
-        map.insertBefore(renderCard(points[i]), mapFiltersContainer);
-      }
+      map.insertBefore(renderCard(points[i]), mapFiltersContainer);
     }
   }
 };

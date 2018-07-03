@@ -341,10 +341,10 @@ var inputTimeOut = adForm.querySelector('select#timeout');
 
 // проверка полей комнат и гостей при изменении поля с гостями
 var onInputGuestsChange = function () {
-  if (inputRooms.value === '100' && inputGuests.value !== '0') {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
-  } else if (inputRooms.value !== '100' && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+  if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
+    displayError();
+  } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
+    displayError();
   } else {
     inputGuests.setCustomValidity('');
   }
@@ -353,15 +353,19 @@ inputGuests.addEventListener('change', onInputGuestsChange);
 
 // проверка полей комнат и гостей при изменении поля с комнатами
 var onInputRoomsChange = function () {
-  if (inputRooms.value === '100' && inputGuests.value !== '0') {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
-  } else if (inputRooms.value !== '100' && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+  if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
+    displayError();
+  } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
+    displayError();
   } else {
     inputGuests.setCustomValidity('');
   }
 };
 inputRooms.addEventListener('change', onInputRoomsChange);
+
+var displayError = function () {
+  inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+};
 
 // установка минимальных цен в зависимости от типа дома
 var onInputTypeChange = function () {

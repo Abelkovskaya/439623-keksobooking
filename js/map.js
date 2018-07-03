@@ -1,6 +1,6 @@
 'use strict';
 
-// типы вариантов размещения
+// словарь типов домов
 var HOUSE_TYPES = {
   bungalo: 'Бунгало',
   house: 'Дом',
@@ -39,14 +39,14 @@ var MAX_Y = 630;
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
 
-// нахожу указанные в задании элементы
+// нахождение некоторых элементов
 var map = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
 var fieldsets = adForm.querySelectorAll('fieldset');
 var mapPinMain = map.querySelector('.map__pin--main');
 var inputAdress = document.querySelector('#address');
 
-// делаю поля формы неактивными
+// делает поля формы неактивными
 var disableForm = function () {
   for (var i = 0; i < fieldsets.length; i++) {
     fieldsets[i].setAttribute('disabled', '');
@@ -54,7 +54,7 @@ var disableForm = function () {
 };
 disableForm();
 
-// получаю координаты и вывожу в неактивную страницу
+// получает координаты и выводит в неактивную страницу
 var getMainPinCoords = function () {
   var mapPinMainLeft = mapPinMain.style.left;
   var mapPinMainTop = mapPinMain.style.top;
@@ -66,39 +66,82 @@ var getMainPinCoords = function () {
 };
 getMainPinCoords();
 
-// показываю пины
+// показывает пины
 var showPins = function () {
   for (var i = 0; i < mapPin.length; i++) {
     mapPin[i].classList.remove('hidden');
   }
 };
 
-// активирую поля формы
+// активирует поля формы
 var acivateForm = function () {
   for (var j = 0; j < fieldsets.length; j++) {
     fieldsets[j].removeAttribute('disabled', '');
   }
 };
 
-// функция перевода страницы в активный режим
-var onMapPinMainMouseUp = function () {
-  // удаляет плашку
-  map.classList.remove('map--faded');
 
-  // вызов функции показа пинов
-  showPins();
+// ПЕРЕТАСКИВАНИЕ МАРКЕРА и АКТИВАЦИЯ СТРАНИЦЫ
+var onMapPinMainMouseDown = function (evt) {
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
 
-  // удаляю плашку с формы
-  adForm.classList.remove('ad-form--disabled');
+  var onMapPinMainMove = function (moveEvt) {
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
 
-  // вызываю функции активации формы
-  acivateForm();
+    startCoords = {
+      x: moveEvt.x,
+      y: moveEvt.y
+    };
 
-  // получает новые координаты и выводит в активную страницу
-  getMainPinCoords();
+    var mapWidth = map.offsetWidth;
+    var minTop = 130;
+    var maxTop = 630;
+
+    mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+    mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+
+    if ((mapPinMain.offsetLeft - shift.x) > (mapWidth - mapPinMain.offsetWidth)) {
+      mapPinMain.style.left = mapWidth - mapPinMain.offsetWidth + 'px';
+    }
+    if ((mapPinMain.offsetLeft - shift.x) < (mapWidth - mapWidth)) {
+      mapPinMain.style.left = (mapWidth - mapWidth) + 'px';
+    }
+    if ((mapPinMain.offsetTop - shift.y) < (minTop - mapPinMain.offsetHeight)) {
+      mapPinMain.style.top = (minTop - mapPinMain.offsetHeight) + 'px';
+    }
+    if ((mapPinMain.offsetTop - shift.y) > maxTop) {
+      mapPinMain.style.top = maxTop + 'px';
+    }
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMapPinMainMove);
+    document.removeEventListener('mouseup', onMouseUp);
+    getMainPinCoords();
+
+    // удаляет плашку
+    map.classList.remove('map--faded');
+
+    // вызов функции показа пинов
+    showPins();
+
+    // удаляет плашку с формы
+    adForm.classList.remove('ad-form--disabled');
+
+    // вызов функции активации формы
+    acivateForm();
+  };
+
+  document.addEventListener('mousemove', onMapPinMainMove);
+  document.addEventListener('mouseup', onMouseUp);
 };
-// обработчик события на главном пине - активация страницы
-mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
 
 // генерация случайного числа
 var generateRandIndex = function (min, max) {
@@ -118,7 +161,7 @@ var arrayShuffle = function (array) {
   return array;
 };
 
-// создаю объекты
+// создаёт объекты
 var createObjects = function (quantity) {
   var objects = [];
   var obj = {};
@@ -141,7 +184,6 @@ var createObjects = function (quantity) {
     obj.author = {};
     obj.offer = {};
     obj.location = {};
-
 
     var avatarNumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
     obj.author.avatar = 'img/avatars/user' + avatarNumber + '.png';
@@ -170,10 +212,10 @@ var createObjects = function (quantity) {
   return objects;
 };
 
-// вызываю создателя объектов
+// вызывает создателя объектов
 var points = createObjects(8);
 
-// создаю пин
+// создаёт пин
 var renderPin = function (pin) {
   var pinElement = templatePin.cloneNode(true);
   var mapPinWidth = 50;
@@ -204,7 +246,7 @@ var paintPins = function () {
 };
 paintPins();
 
-// создаю список удобств
+// создаёт список фич
 var renderFeatures = function (arrFeatures) {
   var fragmentFeatures = document.createDocumentFragment();
   var newFeatureElement;
@@ -290,7 +332,6 @@ var onMapClick = function (evt) {
 };
 map.addEventListener('click', onMapClick);
 
-
 // ВАЛИДАЦИЯ ФОРМ
 var inputRooms = adForm.querySelector('select#room_number');
 var inputGuests = adForm.querySelector('select#capacity');
@@ -300,10 +341,10 @@ var inputTimeOut = adForm.querySelector('select#timeout');
 
 // проверка полей комнат и гостей при изменении поля с гостями
 var onInputGuestsChange = function () {
-  if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
-    displayError();
-  } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-    displayError();
+  if (inputRooms.value === '100' && inputGuests.value !== '0') {
+    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+  } else if (inputRooms.value !== '100' && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
+    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
   } else {
     inputGuests.setCustomValidity('');
   }
@@ -312,19 +353,15 @@ inputGuests.addEventListener('change', onInputGuestsChange);
 
 // проверка полей комнат и гостей при изменении поля с комнатами
 var onInputRoomsChange = function () {
-  if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
-    displayError();
-  } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-    displayError();
+  if (inputRooms.value === '100' && inputGuests.value !== '0') {
+    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
+  } else if (inputRooms.value !== '100' && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
+    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
   } else {
     inputGuests.setCustomValidity('');
   }
 };
 inputRooms.addEventListener('change', onInputRoomsChange);
-
-var displayError = function () {
-  inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
-};
 
 // установка минимальных цен в зависимости от типа дома
 var onInputTypeChange = function () {

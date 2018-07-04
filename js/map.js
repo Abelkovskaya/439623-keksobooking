@@ -100,23 +100,24 @@ var onMapPinMainMouseDown = function (evt) {
     };
 
     var mapWidth = map.offsetWidth;
-    var minTop = 130;
-    var maxTop = 630;
 
     mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
     mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
 
-    if ((mapPinMain.offsetLeft - shift.x) > (mapWidth - mapPinMain.offsetWidth)) {
+    var borderX = mapPinMain.offsetLeft - shift.x;
+    var borderY = mapPinMain.offsetTop - shift.y;
+
+    if (borderX > (mapWidth - mapPinMain.offsetWidth)) {
       mapPinMain.style.left = mapWidth - mapPinMain.offsetWidth + 'px';
     }
-    if ((mapPinMain.offsetLeft - shift.x) < (mapWidth - mapWidth)) {
+    if (borderX < (mapWidth - mapWidth)) {
       mapPinMain.style.left = (mapWidth - mapWidth) + 'px';
     }
-    if ((mapPinMain.offsetTop - shift.y) < (minTop - mapPinMain.offsetHeight)) {
-      mapPinMain.style.top = (minTop - mapPinMain.offsetHeight) + 'px';
+    if (borderY < (MIN_Y - mapPinMain.offsetHeight)) {
+      mapPinMain.style.top = (MIN_Y - mapPinMain.offsetHeight) + 'px';
     }
-    if ((mapPinMain.offsetTop - shift.y) > maxTop) {
-      mapPinMain.style.top = maxTop + 'px';
+    if (borderY > MAX_Y) {
+      mapPinMain.style.top = MAX_Y + 'px';
     }
   };
 

@@ -1,6 +1,6 @@
 'use strict';
 
-// типы вариантов размещения
+// словарь типов домов
 var HOUSE_TYPES = {
   bungalo: 'Бунгало',
   house: 'Дом',
@@ -39,14 +39,14 @@ var MAX_Y = 630;
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
 
-// нахожу указанные в задании элементы
+// нахождение некоторых элементов
 var map = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
 var fieldsets = adForm.querySelectorAll('fieldset');
 var mapPinMain = map.querySelector('.map__pin--main');
 var inputAdress = document.querySelector('#address');
 
-// делаю поля формы неактивными
+// делает поля формы неактивными
 var disableForm = function () {
   for (var i = 0; i < fieldsets.length; i++) {
     fieldsets[i].setAttribute('disabled', '');
@@ -54,7 +54,7 @@ var disableForm = function () {
 };
 disableForm();
 
-// получаю координаты и вывожу в неактивную страницу
+// получает координаты и выводит в неактивную страницу
 var getMainPinCoords = function () {
   var mapPinMainLeft = mapPinMain.style.left;
   var mapPinMainTop = mapPinMain.style.top;
@@ -66,39 +66,83 @@ var getMainPinCoords = function () {
 };
 getMainPinCoords();
 
-// показываю пины
+// показывает пины
 var showPins = function () {
   for (var i = 0; i < mapPin.length; i++) {
     mapPin[i].classList.remove('hidden');
   }
 };
 
-// активирую поля формы
+// активирует поля формы
 var acivateForm = function () {
   for (var j = 0; j < fieldsets.length; j++) {
     fieldsets[j].removeAttribute('disabled', '');
   }
 };
 
-// функция перевода страницы в активный режим
-var onMapPinMainMouseUp = function () {
-  // удаляет плашку
-  map.classList.remove('map--faded');
 
-  // вызов функции показа пинов
-  showPins();
+// ПЕРЕТАСКИВАНИЕ МАРКЕРА и АКТИВАЦИЯ СТРАНИЦЫ
+var onMapPinMainMouseDown = function (evt) {
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
 
-  // удаляю плашку с формы
-  adForm.classList.remove('ad-form--disabled');
+  var onMapPinMainMove = function (moveEvt) {
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
 
-  // вызываю функции активации формы
-  acivateForm();
+    startCoords = {
+      x: moveEvt.x,
+      y: moveEvt.y
+    };
 
-  // получает новые координаты и выводит в активную страницу
-  getMainPinCoords();
+    var mapWidth = map.offsetWidth;
+
+    mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+    mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+
+    var borderX = mapPinMain.offsetLeft - shift.x;
+    var borderY = mapPinMain.offsetTop - shift.y;
+
+    if (borderX > (mapWidth - mapPinMain.offsetWidth)) {
+      mapPinMain.style.left = mapWidth - mapPinMain.offsetWidth + 'px';
+    }
+    if (borderX < (mapWidth - mapWidth)) {
+      mapPinMain.style.left = (mapWidth - mapWidth) + 'px';
+    }
+    if (borderY < (MIN_Y - mapPinMain.offsetHeight)) {
+      mapPinMain.style.top = (MIN_Y - mapPinMain.offsetHeight) + 'px';
+    }
+    if (borderY > MAX_Y) {
+      mapPinMain.style.top = MAX_Y + 'px';
+    }
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMapPinMainMove);
+    document.removeEventListener('mouseup', onMouseUp);
+    getMainPinCoords();
+
+    // удаляет плашку
+    map.classList.remove('map--faded');
+
+    // вызов функции показа пинов
+    showPins();
+
+    // удаляет плашку с формы
+    adForm.classList.remove('ad-form--disabled');
+
+    // вызов функции активации формы
+    acivateForm();
+  };
+
+  document.addEventListener('mousemove', onMapPinMainMove);
+  document.addEventListener('mouseup', onMouseUp);
 };
-// обработчик события на главном пине - активация страницы
-mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
 
 // генерация случайного числа
 var generateRandIndex = function (min, max) {
@@ -118,7 +162,7 @@ var arrayShuffle = function (array) {
   return array;
 };
 
-// создаю объекты
+// создаёт объекты
 var createObjects = function (quantity) {
   var objects = [];
   var obj = {};
@@ -141,7 +185,6 @@ var createObjects = function (quantity) {
     obj.author = {};
     obj.offer = {};
     obj.location = {};
-
 
     var avatarNumber = numbersAvatar[i] <= 9 ? '0' + numbersAvatar[i] : numbersAvatar[i];
     obj.author.avatar = 'img/avatars/user' + avatarNumber + '.png';
@@ -170,10 +213,10 @@ var createObjects = function (quantity) {
   return objects;
 };
 
-// вызываю создателя объектов
+// вызывает создателя объектов
 var points = createObjects(8);
 
-// создаю пин
+// создаёт пин
 var renderPin = function (pin) {
   var pinElement = templatePin.cloneNode(true);
   var mapPinWidth = 50;
@@ -204,7 +247,7 @@ var paintPins = function () {
 };
 paintPins();
 
-// создаю список удобств
+// создаёт список фич
 var renderFeatures = function (arrFeatures) {
   var fragmentFeatures = document.createDocumentFragment();
   var newFeatureElement;
@@ -289,7 +332,6 @@ var onMapClick = function (evt) {
   }
 };
 map.addEventListener('click', onMapClick);
-
 
 // ВАЛИДАЦИЯ ФОРМ
 var inputRooms = adForm.querySelector('select#room_number');

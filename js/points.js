@@ -20,9 +20,6 @@
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
 
-  var NOT_FOR_GUESTS = '100';
-
-// указатель
   var MIN_X = 300;
   var MIN_Y = 130;
   var MAX_X = 900;

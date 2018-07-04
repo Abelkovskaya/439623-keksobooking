@@ -1,5 +1,9 @@
 'use strict';
 
+// указатель
+var MIN_Y = 130;
+var MAX_Y = 630;
+
 (function () {
   var mapPinMain = window.utils.map.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');

@@ -1,5 +1,7 @@
 'use strict';
 
+var NOT_FOR_GUESTS = '100';
+
 (function () {
   var adForm = document.querySelector('.ad-form');
   var fieldsets = adForm.querySelectorAll('fieldset');
@@ -18,7 +20,7 @@
 
   window.utils.getMainPinCoords();
 
-// проверка полей комнат и гостей при изменении поля с гостями
+  // проверка полей комнат и гостей при изменении поля с гостями
   var onInputGuestsChange = function () {
     if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
       displayError();
@@ -30,7 +32,7 @@
   };
   inputGuests.addEventListener('change', onInputGuestsChange);
 
-// проверка полей комнат и гостей при изменении поля с комнатами
+  // проверка полей комнат и гостей при изменении поля с комнатами
   var onInputRoomsChange = function () {
     if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
       displayError();

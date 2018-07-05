@@ -3,7 +3,10 @@
 var NOT_FOR_GUESTS = '100';
 
 (function () {
+  var ESC_CODE = 27;
+
   var adForm = document.querySelector('.ad-form');
+  var messageSuccess = document.querySelector('.success');
   var fieldsets = adForm.querySelectorAll('fieldset');
   var inputRooms = adForm.querySelector('select#room_number');
   var inputGuests = adForm.querySelector('select#capacity');
@@ -83,4 +86,41 @@ var NOT_FOR_GUESTS = '100';
   };
 
   window.acivateForm = acivateForm;
+
+  var hideMessageSuccess = function (evt) {
+    if (evt.keyCode === ESC_CODE || evt.button || evt.which) {
+      messageSuccess.classList.add('hidden');
+      document.removeEventListener('click', hideMessageSuccess);
+      document.removeEventListener('keydown', hideMessageSuccess);
+    }
+  };
+
+  var showMessageSuccess = function () {
+    messageSuccess.classList.remove('hidden');
+    document.addEventListener('click', hideMessageSuccess);
+    document.addEventListener('keydown', hideMessageSuccess);
+  };
+
+  var initForm = function () {
+    adForm.reset();
+    showMessageSuccess();
+    window.utils.getMainPinCoords();
+  };
+
+  var initFormError = function (errorMessage) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+
+    var deleteDiv = function () {
+      document.querySelector('.error-message').remove();
+    };
+    setTimeout(deleteDiv, 3000);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(adForm), initForm, initFormError);
+    evt.preventDefault();
+  });
 })();

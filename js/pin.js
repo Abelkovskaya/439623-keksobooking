@@ -13,7 +13,7 @@ var MAX_Y = 630;
   var template = document.querySelector('template');
   var templatePin = template.content.querySelector('.map__pin');
 
-  var renderPin = function (pin) {
+  var createPin = function (pin) {
     var pinElement = templatePin.cloneNode(true);
     var mapPinWidth = 50;
     var mapPinHeight = 70;
@@ -27,27 +27,46 @@ var MAX_Y = 630;
   };
 
   // рисует пины
-  var paintPins = function () {
+  var renderPins = function (points) {
     var fragmentPin = document.createDocumentFragment();
-    for (var i = 0; i < window.points.length; i++) {
-      fragmentPin.appendChild(renderPin(window.points[i]));
+
+    for (var i = 0; i < points.length; i++) {
+      fragmentPin.appendChild(createPin(points[i]));
     }
     pins.appendChild(fragmentPin);
   };
-  paintPins();
 
-  var mapPin = window.utils.map.querySelectorAll('button[type=button]');
-  var hidePins = function () {
-    for (var i = 0; i < mapPin.length; i++) {
-      mapPin[i].classList.add('hidden');
+  // отслеживает клик по пину
+  var searchPin = function (evt) {
+    var currentTar = evt.currentTarget;
+
+    for (var i = 0; i < window.dataArray.length; i++) {
+      if (currentTar === window.mapPin[i]) {
+        window.checkCard(window.dataArray[i]);
+      }
     }
   };
-  hidePins();
 
-  var showPins = function () {
-    for (var i = 0; i < mapPin.length; i++) {
-      mapPin[i].classList.remove('hidden');
+  var initPins = function (data) {
+    window.dataArray = data.slice(0, 8);
+    renderPins(window.dataArray);
+    window.mapPin = window.utils.map.querySelectorAll('button[type=button]');
+
+    for (var i = 0; i < window.mapPin.length; i++) {
+      window.mapPin[i].addEventListener('click', searchPin);
     }
+  };
+
+  var initPinsError = function (errorMessage) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+
+    var deleteDiv = function () {
+      document.querySelector('div').remove();
+    };
+    setTimeout(deleteDiv, 3000);
   };
 
   // ПЕРЕТАСКИВАНИЕ МАРКЕРА
@@ -69,6 +88,7 @@ var MAX_Y = 630;
       };
 
       var mapWidth = window.utils.map.offsetWidth;
+
       mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
       mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
 
@@ -97,13 +117,12 @@ var MAX_Y = 630;
       // удаляет плашку если она есть
       if (window.utils.map.classList.contains('map--faded')) {
         window.utils.map.classList.remove('map--faded');
+        window.backend.download(initPins, initPinsError);
       }
       // удаляет плашку с формы
       if (adForm.classList.contains('ad-form--disabled')) {
         adForm.classList.remove('ad-form--disabled');
       }
-      // вызов функции показа пинов
-      showPins();
 
       // вызов функции активации формы
       window.acivateForm();

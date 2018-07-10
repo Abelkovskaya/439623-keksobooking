@@ -1216,3 +1216,20 @@ fieldset {
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
 }
+
+/* Плашка ошибки */
+
+.error-message {
+  position: fixed;
+  left: 0;
+  right: 0;
+
+  margin: 0 auto;
+
+  font-size: 30px;
+  text-align: center;
+  color: #ffffff;
+
+  background-color: #ff6547;
+  z-index: 100;
+}

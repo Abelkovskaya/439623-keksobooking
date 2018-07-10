@@ -1,5 +1,7 @@
 'use strict';
 
+var ESC_CODE = 27;
+
 (function () {
   var HOUSE_TYPES = {
     bungalo: 'Бунгало',
@@ -68,6 +70,7 @@
       articleCard.remove();
       window.utils.map.insertBefore(createCard(point), mapFiltersContainer);
     }
+    document.addEventListener('keydown', onEscPress);
   };
 
   // вешает обработчик на карту и отлавливает клик по крестику
@@ -80,3 +83,17 @@
   };
   window.utils.map.addEventListener('click', onMapClick);
 })();
+
+var isEscKeyCode = function (evt) {
+  return evt.keyCode === ESC_CODE;
+};
+
+var onEscPress = function (evt) {
+  var articleCard = window.utils.map.querySelector('article');
+  if (isEscKeyCode(evt)) {
+    articleCard.remove();
+    document.removeEventListener('keydown', onEscPress);
+  }
+};
+
+

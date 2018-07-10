@@ -41,8 +41,10 @@ var MAX_Y = 630;
     var currentTar = evt.currentTarget;
 
     window.dataArrayForRender.forEach(function (it, i) {
+      window.mapPin[i].classList.remove('map__pin--active');
       if (currentTar === window.mapPin[i]) {
         window.checkCard(it);
+        currentTar.classList.add('map__pin--active');
       }
     });
   };

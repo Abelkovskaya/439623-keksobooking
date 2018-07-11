@@ -118,8 +118,8 @@
       <fieldset class="ad-form__element">
         <label class="ad-form__label" for="type">Тип жилья</label>
         <select id="type" name="type">
-          <option value="bungalo" selected>Бунгало</option>
-          <option value="flat">Квартира</option>
+          <option value="bungalo">Бунгало</option>
+          <option value="flat" selected>Квартира</option>
           <option value="house">Дом</option>
           <option value="palace">Дворец</option>
         </select>
@@ -127,7 +127,7 @@
 
       <fieldset class="ad-form__element">
         <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-        <input id="price" name="price" type="number" placeholder="5000" max="1000000" required>
+        <input id="price" name="price" type="number" placeholder="1000" max="1000000" required>
       </fieldset>
 
       <fieldset class="ad-form__element ad-form__element--time">
@@ -203,7 +203,7 @@
       </fieldset>
 
       <fieldset class="ad-form__element ad-form__element--submit">
-        <button class="ad-form__submit" type="submit">Опубликовать</button>
+        <button class="ad-form__submit" type="submit" formtarget="_blank">Опубликовать</button>
         или <button class="ad-form__reset" type="reset">очистить</button>
       </fieldset>
     </form>

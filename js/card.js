@@ -1,8 +1,8 @@
 'use strict';
 
-var ESC_CODE = 27;
-
 (function () {
+  var ESC_CODE = 27;
+
   var HOUSE_TYPES = {
     bungalo: 'Бунгало',
     house: 'Дом',
@@ -82,18 +82,19 @@ var ESC_CODE = 27;
     }
   };
   window.utils.map.addEventListener('click', onMapClick);
+
+  var isEscKeyCode = function (evt) {
+    return evt.keyCode === ESC_CODE;
+  };
+
+  var onEscPress = function (evt) {
+    var articleCard = window.utils.map.querySelector('article');
+    if (isEscKeyCode(evt)) {
+      articleCard.remove();
+      document.removeEventListener('keydown', onEscPress);
+    }
+  };
 })();
 
-var isEscKeyCode = function (evt) {
-  return evt.keyCode === ESC_CODE;
-};
-
-var onEscPress = function (evt) {
-  var articleCard = window.utils.map.querySelector('article');
-  if (isEscKeyCode(evt)) {
-    articleCard.remove();
-    document.removeEventListener('keydown', onEscPress);
-  }
-};
 
 

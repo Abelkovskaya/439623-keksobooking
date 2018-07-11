@@ -1,10 +1,17 @@
 'use strict';
 
-// указатель
-var MIN_Y = 130;
-var MAX_Y = 630;
-
 (function () {
+  // указатель
+  var MIN_Y = 130;
+  var MAX_Y = 630;
+  var MAIN_PIN_START_X = 570;
+  var MAIN_PIN_START_Y = 375;
+
+  var MAP_PIN_WIDTH = 50;
+  var MAP_PIN_HEIGHT = 70;
+
+  var PINS_QUANTITY_MAX = 5;
+
   var mapPinMain = window.utils.map.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
 
@@ -15,11 +22,9 @@ var MAX_Y = 630;
 
   var createPin = function (pin) {
     var pinElement = templatePin.cloneNode(true);
-    var mapPinWidth = 50;
-    var mapPinHeight = 70;
 
-    pinElement.style.left = pin.location.x - mapPinWidth / 2 + 'px';
-    pinElement.style.top = pin.location.y - mapPinHeight + 'px';
+    pinElement.style.left = pin.location.x - MAP_PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = pin.location.y - MAP_PIN_HEIGHT + 'px';
     pinElement.querySelector('img').src = pin.author.avatar;
     pinElement.querySelector('img').alt = pin.offer.title;
 
@@ -51,9 +56,8 @@ var MAX_Y = 630;
 
   var initPins = function (data) {
     window.dataArray = data;
-    window.pinsQuantityMax = 5;
     var dataArrayShuf = window.utils.arrayShuffle(data);
-    window.dataArrayForRender = dataArrayShuf.slice(0, window.pinsQuantityMax);
+    window.dataArrayForRender = dataArrayShuf.slice(0, PINS_QUANTITY_MAX);
 
     renderPins(window.dataArrayForRender);
 
@@ -88,6 +92,19 @@ var MAX_Y = 630;
   var inputElevator = mapFilters.querySelector('input#filter-elevator');
   var inputConditioner = mapFilters.querySelector('input#filter-conditioner');
 
+  window.pin = {
+    remove: function removePins() {
+      var mapPin = window.utils.map.querySelectorAll('button[type=button]');
+      Array.from(mapPin).forEach(function (it) {
+        it.remove();
+      });
+    },
+    resetMainPin: function resetMainPin() {
+      mapPinMain.style.left = MAIN_PIN_START_X + 'px';
+      mapPinMain.style.top = MAIN_PIN_START_Y + 'px';
+    }
+  };
+
   var updatePins = function () {
     var removeCard = function () {
       var articleCard = window.utils.map.querySelector('article');
@@ -97,13 +114,7 @@ var MAX_Y = 630;
     };
     removeCard();
 
-    var removePins = function () {
-      var mapPin = window.utils.map.querySelectorAll('button[type=button]');
-      Array.from(mapPin).forEach(function (it) {
-        it.remove();
-      });
-    };
-    removePins();
+    window.pin.remove();
 
     var filterPins = function (it) {
       var allChecksComplete = true;
@@ -141,7 +152,7 @@ var MAX_Y = 630;
 
     var samePins = window.dataArray.filter(filterPins);
 
-    window.dataArrayForRender = samePins.slice(0, window.pinsQuantityMax);
+    window.dataArrayForRender = samePins.slice(0, PINS_QUANTITY_MAX);
     renderPins(window.dataArrayForRender);
 
     window.mapPin = window.utils.map.querySelectorAll('button[type=button]');

@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var NOT_FOR_GUESTS = '100';
   var ESC_CODE = 27;
   var adForm = document.querySelector('.ad-form');
   var messageSuccess = document.querySelector('.success');
@@ -15,6 +14,7 @@
   var inputTimeOut = adForm.querySelector('select#timeout');
   var resetButton = adForm.querySelector('.ad-form__reset');
   var map = document.querySelector('.map');
+  var capacity = adForm.querySelector('#capacity');
 
   var TypeMinPrice = {
     'bungalo': 0,
@@ -34,7 +34,7 @@
   var setDefaultCapacity = function () {
     capacityValues.forEach(function (option) {
       var capacityValue = parseInt(option.value, 10);
-      option.selected = capacityValue === 1;
+      option.disabled = capacityValue !== 1;
     });
   };
 
@@ -56,33 +56,30 @@
 
   window.utils.getMainPinCoords();
 
-  // проверка полей комнат и гостей при изменении поля с гостями
-  var onInputGuestsChange = function () {
-    if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
-      displayError();
-    } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-      displayError();
-    } else {
-      inputGuests.setCustomValidity('');
-    }
-  };
-  inputGuests.addEventListener('change', onInputGuestsChange);
-
   // проверка полей комнат и гостей при изменении поля с комнатами
-  var onInputRoomsChange = function () {
-    if (inputRooms.value === NOT_FOR_GUESTS && inputGuests.value !== '0') {
-      displayError();
-    } else if (inputRooms.value !== NOT_FOR_GUESTS && (inputRooms.value < inputGuests.value || inputGuests.value < 1)) {
-      displayError();
-    } else {
-      inputGuests.setCustomValidity('');
-    }
+  var onInputRoomsChange = function (evt) {
+    roomNumberChangeHandler(evt);
   };
-  inputRooms.addEventListener('change', onInputRoomsChange);
 
-  var displayError = function () {
-    inputGuests.setCustomValidity('Кол-во гостей не может быть больше кол-ва комнат. Только "100 комнат" для "не для гостей"');
-  };
+  // функция проставления disabled у невалидных значений
+  function synchronizeCapacityByRoomNumbers(roomValue) {
+    var lastEnabledIndex = null;
+    capacityValues.forEach(function (option, index) {
+      var capacityValue = parseInt(option.value, 10);
+      var isDisabled = roomValue !== 100 ? capacityValue === 0 || capacityValue > roomValue : capacityValue !== 0;
+      option.disabled = isDisabled;
+      lastEnabledIndex = isDisabled ? lastEnabledIndex : index;
+    });
+    capacity[lastEnabledIndex].selected = true;
+  }
+
+  // функция синхронизации кол-ва комнат с кол-вом мест
+  function roomNumberChangeHandler(evt) {
+    var roomValue = parseInt(evt.target.value, 10);
+    synchronizeCapacityByRoomNumbers(roomValue);
+  }
+
+  inputRooms.addEventListener('change', onInputRoomsChange);
 
   // установка минимальных цен в зависимости от типа дома
   var onInputTypeChange = function () {

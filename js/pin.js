@@ -93,7 +93,7 @@
   var inputConditioner = mapFilters.querySelector('input#filter-conditioner');
 
   window.pin = {
-    remove: function removePins() {
+    removePin: function removePins() {
       var mapPin = window.utils.map.querySelectorAll('button[type=button]');
       Array.from(mapPin).forEach(function (it) {
         it.remove();
@@ -102,19 +102,18 @@
     resetMainPin: function resetMainPin() {
       mapPinMain.style.left = MAIN_PIN_START_X + 'px';
       mapPinMain.style.top = MAIN_PIN_START_Y + 'px';
-    }
-  };
-
-  var updatePins = function () {
-    var removeCard = function () {
+    },
+    removeCard: function removeCard() {
       var articleCard = window.utils.map.querySelector('article');
       if (articleCard) {
         articleCard.remove();
       }
-    };
-    removeCard();
+    }
+  };
 
-    window.pin.remove();
+  var updatePins = function () {
+    window.pin.removeCard();
+    window.pin.removePin();
 
     var filterPins = function (it) {
       var allChecksComplete = true;

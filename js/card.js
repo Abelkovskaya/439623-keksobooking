@@ -13,7 +13,7 @@
   var template = document.querySelector('template');
   var templateCard = template.content.querySelector('.map__card');
 
-  // создаёт список фич
+  // создаёт список удобств
   var createFeatures = function (arrFeatures) {
     var fragmentFeatures = document.createDocumentFragment();
     var newFeatureElement;

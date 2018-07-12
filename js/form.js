@@ -44,7 +44,8 @@
     setDefaultPricePlaceholder();
     setDefaultMinPrice();
     setDefaultCapacity();
-    window.pin.remove();
+    window.pin.removeCard();
+    window.pin.removePin();
     window.pin.resetMainPin();
     map.classList.add('map--faded');
     for (var i = 0; i < fieldsets.length; i++) {
@@ -137,7 +138,7 @@
   };
 
   var initForm = function () {
-    adForm.reset();
+    disableForm();
     showMessageSuccess();
     window.utils.getMainPinCoords();
   };
